@@ -7,7 +7,7 @@ class Baby(models.Model):
     age = models.DateField(null=True)
 
     def __str__(self):
-        return f'{self.name}, {datetime.date.today() - self.age} days'
+        return f"{self.name}, {datetime.date.today() - self.age} days"
 
 
 class Food(models.Model):
@@ -16,13 +16,14 @@ class Food(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Feeding(models.Model):
-    date = models.DateTimeField('feeding date')
+    date = models.DateTimeField("feeding date")
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     amount = models.IntegerField()
     baby = models.ForeignKey(Baby, on_delete=models.CASCADE)
+    created_by = models.ForeignKey("auth.User", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.food} on {self.date} at {self.time}'
+        return f"{self.food} on {self.date} at {self.time}"

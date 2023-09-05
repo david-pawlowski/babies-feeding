@@ -5,37 +5,69 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Baby',
+            name="Baby",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('age', models.DateField(null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("age", models.DateField(null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Food',
+            name="Food",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('natural', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("natural", models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
-            name='Feeding',
+            name="Feeding",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateTimeField(verbose_name='feeding date')),
-                ('amount', models.IntegerField()),
-                ('baby', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='babies.baby')),
-                ('food', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='babies.food')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateTimeField(verbose_name="feeding date")),
+                ("amount", models.IntegerField()),
+                (
+                    "baby",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="babies.baby"
+                    ),
+                ),
+                (
+                    "food",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="babies.food"
+                    ),
+                ),
             ],
         ),
     ]
