@@ -76,9 +76,12 @@ WSGI_APPLICATION = 'baby.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DBNAME", "babydb"),
+        "HOST": os.environ.get("DBHOST", "db"),
+        "USER": os.environ.get("DBUSER", "myuser"),
+        "PASSWORD": os.environ.get("DBPASS", "mypassword"),
     }
 }
 
@@ -132,7 +135,7 @@ CELERY_RESULT_BACKEND = os.environ.get(
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
-EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST = "smtp.protonmail.ch"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")

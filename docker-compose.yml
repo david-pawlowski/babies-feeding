@@ -2,16 +2,34 @@ version: '3'
 services:
   web:
     build: .
-    container_name: backend
+    container_name: baby_backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/baby
+    networks:
+      - baby_network
     ports:
       - 8000:8000
       - 5678:5678
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    container_name: baby_db
+    environment:
+      - POSTGRES_DB=babydb
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - baby_network
 
   redis:
     image: redis:latest
+    container_name: baby_redis
 
   celery_worker:
     build: .
@@ -19,6 +37,13 @@ services:
       - ./.env
     command: celery -A baby worker -l info
     volumes:
-      - .:/baby
+      - .:/app
     depends_on:
       - redis
+      - db
+
+networks:
+  baby_network:
+
+volumes:
+  postgres_data:

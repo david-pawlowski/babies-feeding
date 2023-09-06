@@ -19,7 +19,7 @@ class Food(models.Model):
 
 
 class Feeding(models.Model):
-    date = models.DateTimeField("feeding date")
+    created_at = models.DateTimeField()
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     amount = models.IntegerField()
     baby = models.ForeignKey(Baby, on_delete=models.CASCADE)
