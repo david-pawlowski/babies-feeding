@@ -19,3 +19,34 @@ def send_feeding_mail(self, mail_subject, target_mail, message):
         logging.error("Email sending failed.")
         return False
     return True
+
+
+@shared_task(bind=True)
+def send_push_notification(self, message, target_token):
+    import http.client, urllib
+    conn = http.client.HTTPSConnection("api.pushover.net:443")
+    print(f"Sending push notification... {target_token}")
+    conn.request("POST", "/1/messages.json",
+    urllib.parse.urlencode({
+        "token": settings.PUSHOVER_API_TOKEN,
+        "user": target_token,
+        "message": message,
+    }), { "Content-type": "application/x-www-form-urlencoded" })
+    conn.getresponse()
+    print("Push notification sent.")
+
+
+    # from pyfcm import FCMNotification
+
+    # push_service = FCMNotification(api_key=settings.FCM_API_KEY)
+    # try:
+    #     push_service.notify_single_device(
+    #         registration_id=target_token,
+    #         message_body=message,
+    #         message_title="Baby Feeding",
+    #         sound="Default",
+    #     )
+    # except Exception:
+    #     logging.error("Push notification sending failed.")
+    #     return False
+    # return True

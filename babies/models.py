@@ -1,6 +1,12 @@
 import datetime
 from django.db import models
 
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    push_over_token = models.CharField(max_length=100, null=True)
+
 
 class Baby(models.Model):
     name = models.CharField(max_length=100)
@@ -23,7 +29,7 @@ class Feeding(models.Model):
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     amount = models.IntegerField()
     baby = models.ForeignKey(Baby, on_delete=models.CASCADE)
-    created_by = models.ForeignKey("auth.User", on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.food} on {self.date} at {self.time}"
+        return f"{self.food} at {self.created_at}"

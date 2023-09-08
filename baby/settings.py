@@ -88,6 +88,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "babies.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -140,3 +141,6 @@ EMAIL_HOST = "smtp.protonmail.ch"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+
+
+PUSHOVER_API_TOKEN = os.environ.get("PUSHOVER_API_TOKEN")
