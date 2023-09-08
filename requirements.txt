@@ -3,3 +3,4 @@ djangorestframework
 celery
 Redis
 psycopg2
+python-dotenv

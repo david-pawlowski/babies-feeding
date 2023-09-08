@@ -1,5 +1,5 @@
 import logging
-from smtplib import SMTPSenderRefused
+from smtplib import SMTPException
 from celery import shared_task
 from django.core.mail import send_mail
 from django.conf import settings
@@ -15,7 +15,7 @@ def send_feeding_mail(self, mail_subject, target_mail, message):
             recipient_list=[target_mail],
             fail_silently=False,
         )
-    except SMTPSenderRefused:
-        logging.error('Email sending failed.')
+    except SMTPException:
+        logging.error("Email sending failed.")
         return False
     return True
