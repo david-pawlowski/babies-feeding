@@ -5,6 +5,7 @@ from babies.models import Baby, Food, Feeding, User
 from babies.tasks import send_feeding_mail, send_push_notification
 
 
+# TODO: Change it to be adjustable in the admin panel.
 TWO_HOURS_IN_S = 60 * 60 * 2
 
 
@@ -13,16 +14,22 @@ class FeedingAdmin(admin.ModelAdmin):
         t = timezone.now() - obj.created_at
         countdown = TWO_HOURS_IN_S - t.total_seconds()
         if t.total_seconds() > TWO_HOURS_IN_S:
-            countdown = None
-        send_feeding_mail(
-            mail_subject="Feeding time!",
-            target_mail=obj.created_by.email,
-            message=f"Last feeding with {obj.food} at {obj.created_at}",
-        ).apply_async(countdown=countdown)
-        # add countdown
-        send_push_notification.delay(
-            message=f"Pora karmiernia {obj.baby.name} ostatnie karmienie {obj.food} o {obj.created_at.strftime('%H:%M')}",
-            target_token=obj.created_by.push_over_token,
+            countdown = 1
+        send_feeding_mail.apply_async(
+            args=(
+                "Feeding time!",
+                obj.created_by.email,
+                f"Last feeding with {obj.food} at {obj.created_at.strftime('%H:%M')}",
+            ),
+            countdown=countdown,
+        )
+        send_push_notification.apply_async(
+            args=(
+                f"{obj.baby.name} it is time to eat something! \
+                    You ate {obj.amount} {obj.food} at {obj.created_at.strftime('%H:%M')}.",
+                obj.created_by.push_over_token,
+            ),
+            countdown=countdown,
         )
         super().save_model(request, obj, form, change)
 

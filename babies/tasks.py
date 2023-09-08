@@ -17,8 +17,6 @@ def send_feeding_mail(self, mail_subject, target_mail, message):
         )
     except SMTPException:
         logging.error("Email sending failed.")
-        return False
-    return True
 
 
 @shared_task(bind=True)
@@ -34,19 +32,3 @@ def send_push_notification(self, message, target_token):
     }), { "Content-type": "application/x-www-form-urlencoded" })
     conn.getresponse()
     print("Push notification sent.")
-
-
-    # from pyfcm import FCMNotification
-
-    # push_service = FCMNotification(api_key=settings.FCM_API_KEY)
-    # try:
-    #     push_service.notify_single_device(
-    #         registration_id=target_token,
-    #         message_body=message,
-    #         message_title="Baby Feeding",
-    #         sound="Default",
-    #     )
-    # except Exception:
-    #     logging.error("Push notification sending failed.")
-    #     return False
-    # return True
