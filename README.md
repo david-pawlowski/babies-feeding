@@ -1,4 +1,4 @@
-# Baby feeding plan
+# Baby feeding plan WIP
 It is a feeding planner app for babies. User can add different type of milk, and track how much and when newborns ate.
 For now email notifications and push notifications are hardcoded to happen 2 hours after every feeding.
 
@@ -19,7 +19,7 @@ docker exec -it baby_db psql -d postgres -U myuser
 ```
 4.
 ```bash
-CREATE DATABASE babydb WITH ENCODING 'UTF8'
+CREATE DATABASE babydb WITH ENCODING 'UTF8';
 ```
 
 Steps 3 and 4 can be skipped if you change DBNAME, DBUSER to *postgres* in .env and docker-compose.yml
