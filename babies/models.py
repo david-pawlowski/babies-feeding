@@ -1,7 +1,13 @@
 import datetime
 from django.db import models
+from django.utils import timezone
 
 from django.contrib.auth.models import AbstractUser
+
+from babies.tasks import send_feeding_mail, send_push_notification
+
+# TODO: Change it to be adjustable in the admin panel.
+TWO_HOURS_IN_S = 60 * 60 * 2
 
 
 class User(AbstractUser):
@@ -13,7 +19,11 @@ class Baby(models.Model):
     age = models.DateField(null=True)
 
     def __str__(self):
-        return f"{self.name}, {datetime.date.today() - self.age} days"
+        return f"{self.name} {self.age_in_days} days"
+
+    @property
+    def age_in_days(self):
+        return (datetime.date.today() - self.age).days
 
 
 class Food(models.Model):
@@ -32,4 +42,30 @@ class Feeding(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.food} at {self.created_at}"
+        return f"{self.baby}, {self.food} at {self.created_at.strftime('%D %H:%M')}"
+
+    def send_notification(self):
+        t = timezone.now() - self.created_at
+        countdown = TWO_HOURS_IN_S - t.total_seconds()
+        if t.total_seconds() > TWO_HOURS_IN_S:
+            countdown = 1
+        send_feeding_mail.apply_async(
+            args=(
+                "Feeding time!",
+                self.created_by.email,
+                f"Last feeding with {self.food} at {self.created_at.strftime('%H:%M')}",
+            ),
+            countdown=countdown,
+        )
+        send_push_notification.apply_async(
+            args=(
+                f"{self.baby.name} it is time to eat something! \
+                    You ate {self.amount} {self.food} at {self.created_at.strftime('%H:%M')}.",
+                self.created_by.push_over_token,
+            ),
+            countdown=countdown,
+        )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.send_notification()
