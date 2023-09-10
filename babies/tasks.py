@@ -1,4 +1,7 @@
 import logging
+import http.client
+import urllib
+
 from smtplib import SMTPException
 from celery import shared_task
 from django.core.mail import send_mail
@@ -21,14 +24,14 @@ def send_feeding_mail(self, mail_subject, target_mail, message):
 
 @shared_task(bind=True)
 def send_push_notification(self, message, target_token):
-    import http.client, urllib
     conn = http.client.HTTPSConnection("api.pushover.net:443")
-    print(f"Sending push notification... {target_token}")
-    conn.request("POST", "/1/messages.json",
-    urllib.parse.urlencode({
-        "token": settings.PUSHOVER_API_TOKEN,
-        "user": target_token,
-        "message": message,
-    }), { "Content-type": "application/x-www-form-urlencoded" })
+    conn.request(
+        "POST", "/1/messages.json",
+        urllib.parse.urlencode({
+            "token": settings.PUSHOVER_API_TOKEN,
+            "user": target_token,
+            "message": message,
+        }),
+        {"Content-type": "application/x-www-form-urlencoded"}
+    )
     conn.getresponse()
-    print("Push notification sent.")

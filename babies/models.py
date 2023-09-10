@@ -42,7 +42,8 @@ class Feeding(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.baby}, {self.food} at {self.created_at.strftime('%D %H:%M')}"
+        return f"{self.baby}, {self.food} \
+            at {self.created_at.strftime('%D %H:%M')}"
 
     def send_notification(self):
         t = timezone.now() - self.created_at
@@ -53,14 +54,16 @@ class Feeding(models.Model):
             args=(
                 "Feeding time!",
                 self.created_by.email,
-                f"Last feeding with {self.food} at {self.created_at.strftime('%H:%M')}",
+                f"Last feeding with {self.food} \
+                at {self.created_at.strftime('%H:%M')}",
             ),
             countdown=countdown,
         )
         send_push_notification.apply_async(
             args=(
                 f"{self.baby.name} it is time to eat something! \
-                    You ate {self.amount} {self.food} at {self.created_at.strftime('%H:%M')}.",
+                    You ate {self.amount} {self.food} \
+                        at {self.created_at.strftime('%H:%M')}.",
                 self.created_by.push_over_token,
             ),
             countdown=countdown,
