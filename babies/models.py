@@ -6,9 +6,6 @@ from django.contrib.auth.models import AbstractUser
 
 from babies.tasks import send_feeding_mail, send_push_notification
 
-# TODO: Change it to be adjustable in the admin panel.
-TWO_HOURS_IN_S = 60 * 60 * 2
-
 
 class User(AbstractUser):
     push_over_token = models.CharField(max_length=100, null=True)
@@ -17,6 +14,7 @@ class User(AbstractUser):
 class Baby(models.Model):
     name = models.CharField(max_length=100)
     age = models.DateField(null=True)
+    feeding_interval = models.IntegerField(default=60)
 
     def __str__(self):
         return f"{self.name} {self.age_in_days} days"
@@ -46,9 +44,10 @@ class Feeding(models.Model):
             at {self.created_at.strftime('%D %H:%M')}"
 
     def send_notification(self):
+        feeding_interval = self.baby.feeding_interval
         t = timezone.now() - self.created_at
-        countdown = TWO_HOURS_IN_S - t.total_seconds()
-        if t.total_seconds() > TWO_HOURS_IN_S:
+        countdown = feeding_interval - t.total_seconds()
+        if t.total_seconds() > TWO_HOUfeeding_intervalRS_IN_S:
             countdown = 1
         send_feeding_mail.apply_async(
             args=(
