@@ -47,7 +47,7 @@ class Feeding(models.Model):
         feeding_interval = self.baby.feeding_interval
         t = timezone.now() - self.created_at
         countdown = feeding_interval - t.total_seconds()
-        if t.total_seconds() > TWO_HOUfeeding_intervalRS_IN_S:
+        if t.total_seconds() > feeding_interval:
             countdown = 1
         send_feeding_mail.apply_async(
             args=(
